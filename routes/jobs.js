@@ -38,7 +38,7 @@ router.put('/:id', async (req, res) => {
 // DELETE a job
 router.delete('/:id', async (req, res) => {
   try {
-    const job = await Job.findByIdAndDelete(req.params.id);
+    const job = await Job.findByIdAndDelete(req.params.id, { new: true, runValidators: true });
     if (!job) return res.status(404).json({ error: 'Job not found' });
     res.status(200).json({ message: 'Job deleted' }); // Consistent 200 response with body
   } catch (error) {
