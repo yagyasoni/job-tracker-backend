@@ -22,16 +22,7 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: 'Failed to add job' });
   }
 });
-const bypassAuthForDelete = (req, res, next) => {
-  if (req.method === 'DELETE') {
-    console.log('Bypassing authentication for DELETE request to:', req.url);
-    return next(); // Skip authentication for DELETE
-  }
-  next(); // Proceed with other methods
-};
 
-// Apply bypass middleware
-router.use(bypassAuthForDelete);
 // PUT update job status
 router.put('/:id', async (req, res) => {
   try {
