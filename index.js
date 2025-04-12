@@ -6,28 +6,18 @@ require('dotenv').config();
 const app = express();
 
 app.use(express.json());
-
-// CORS configuration
-app.use(cors({
-  origin: 'https://job-tracker-frontend1.vercel.app/', // Allow local frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow all methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow common headers
-  optionsSuccessStatus: 200 // Ensure OPTIONS returns 200 for compatibility
-}));
-
-// Explicit OPTIONS handler for preflight requests
-app.options('*', cors());
+app.use(cors());
 
 // Debug logs
 console.log('MONGODB_URI:', process.env.MONGODB_URI);
 console.log('PORT:', process.env.PORT);
 
-// Root route
+// Root route to return empty array
 app.get('/', (req, res) => {
-  res.json([]);
+  res.json([]); // Return empty array
 });
 
-// Health check route
+// Health check route for Render/Railway
 app.get('/health', (req, res) => res.send('Healthy'));
 
 mongoose
@@ -38,7 +28,7 @@ mongoose
     const jobRoutes = require('./routes/jobs');
     app.use('/api/jobs', jobRoutes);
 
-    const PORT = process.env.PORT || 5000;
+    const PORT = process.env.PORT || 5000; // Use platform's PORT or fallback to 5000
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
