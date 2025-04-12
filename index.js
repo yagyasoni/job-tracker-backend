@@ -6,18 +6,28 @@ require('dotenv').config();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+// CORS configuration
+app.use(cors({
+  origin: 'http://localhost:3000', // Allow local frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow DELETE and OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow common headers
+  optionsSuccessStatus: 200 // Ensure OPTIONS returns 200 instead of 204 for some browsers
+}));
+
+// Explicit OPTIONS handler for preflight requests
+app.options('*', cors());
 
 // Debug logs
 console.log('MONGODB_URI:', process.env.MONGODB_URI);
 console.log('PORT:', process.env.PORT);
 
-// Root route to return empty array
+// Root route
 app.get('/', (req, res) => {
-  res.json([]); // Return empty array
+  res.json([]);
 });
 
-// Health check route for Render/Railway
+// Health check route
 app.get('/health', (req, res) => res.send('Healthy'));
 
 mongoose
@@ -28,11 +38,10 @@ mongoose
     const jobRoutes = require('./routes/jobs');
     app.use('/api/jobs', jobRoutes);
 
-    const PORT = process.env.PORT || 5000; // Use platform's PORT or fallback to 5000
+    const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err);
     process.exit(1);
   });
-
